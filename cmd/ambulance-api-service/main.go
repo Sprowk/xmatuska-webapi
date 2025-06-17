@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sprowk/xmatuska-webapi/api"
+	"github.com/sprowk/xmatuska-webapi/internal/ambulance_wl"
 )
 
 func main() {
@@ -22,6 +23,12 @@ func main() {
 	engine := gin.New()
 	engine.Use(gin.Recovery())
 	// request routings
+	handleFunctions := &ambulance_wl.ApiHandleFunctions{
+		AmbulanceConditionsAPI:  ambulance_wl.NewAmbulanceConditionsApi(),
+		AmbulanceWaitingListAPI: ambulance_wl.NewAmbulanceWaitingListApi(),
+	}
+	ambulance_wl.NewRouterWithGinEngine(engine, *handleFunctions)
+
 	engine.GET("/openapi", api.HandleOpenApi)
 	engine.Run(":" + port)
 }
